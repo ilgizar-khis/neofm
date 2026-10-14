@@ -1,14 +1,13 @@
+use crate::UI;
 use crossterm::event;
 
 pub struct App {
-    pub title: String,
+    ui: UI,
 }
 
 impl Default for App {
     fn default() -> Self {
-        Self {
-            title: "Hello world".to_string(),
-        }
+        Self { ui: UI::default() }
     }
 }
 
@@ -16,7 +15,7 @@ impl App {
     pub fn run(&mut self) -> std::io::Result<()> {
         ratatui::run(|term| {
             loop {
-                term.draw(|frame| frame.render_widget(self.title.clone(), frame.area()))?;
+                term.draw(|frame| self.ui.render(frame))?;
 
                 if event::read()?.is_key_press() {
                     break Ok(());
