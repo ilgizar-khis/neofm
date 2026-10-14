@@ -12,8 +12,8 @@ pub enum HLGroup {
 
 #[derive(Clone, Copy, Debug)]
 pub struct HL {
-    bg: Color,
-    fg: Color,
+    pub bg: Color,
+    pub fg: Color,
 }
 
 impl Default for HL {

@@ -8,14 +8,19 @@ use ratatui::{
     widgets::Block,
 };
 
-use crate::ui::focus::Focus;
+use crate::ui::{
+    focus::Focus,
+    ui_style::{HLGroup, UIStyle},
+};
 
 mod focus;
+mod ui_style;
 
 pub struct UI {
     status: String,
     ratio: [u16; 3],
     focus: Focus,
+    style: UIStyle,
 }
 
 impl Default for UI {
@@ -26,6 +31,7 @@ impl Default for UI {
             ratio: [1, 2, 3],
             // focused panel
             focus: Focus::List,
+            style: UIStyle::default(),
         }
     }
 }
@@ -53,12 +59,14 @@ impl UI {
 
         // render panels
         for (i, area) in body_area_list.iter().enumerate() {
-            let style = if i == self.focus.clone() as usize {
-                Style::default().fg(Color::Red)
+            let group = if i == self.focus.clone() as usize {
+                HLGroup::ActiveBorder
             } else {
-                Style::default()
+                HLGroup::NormalBorder
             };
-            frame.render_widget(Block::bordered().border_style(style), *area);
+            let hl = self.style.get_hl(&group);
+            let border_style = Style::default().fg(hl.fg).bg(hl.bg);
+            frame.render_widget(Block::bordered().border_style(border_style), *area);
         }
     }
 }
