@@ -67,14 +67,21 @@ impl UI {
 
         // render panels
         for (i, area) in body_area_list.iter().enumerate() {
-            let group = if i == self.focus.clone() as usize {
-                HLGroup::ActiveBorder
+            let groups = if i == self.focus.clone() as usize {
+                (HLGroup::ActiveBorder, HLGroup::ActivePanel)
             } else {
-                HLGroup::NormalBorder
+                (HLGroup::NormalBorder, HLGroup::NormalPanel)
             };
-            let hl = self.style.get_hl(&group);
-            let border_style = Style::default().fg(hl.fg).bg(hl.bg);
-            frame.render_widget(Block::bordered().border_style(border_style), *area);
+            let border_hl = self.style.get_hl(&groups.0);
+            let panel_hl = self.style.get_hl(&groups.1);
+            let border_style = Style::default().fg(border_hl.fg).bg(border_hl.bg);
+            let panel_style = Style::default().fg(panel_hl.fg).bg(panel_hl.bg);
+            frame.render_widget(
+                Block::bordered()
+                    .border_style(border_style)
+                    .style(panel_style),
+                *area,
+            );
         }
     }
 }
