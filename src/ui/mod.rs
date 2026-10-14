@@ -31,6 +31,14 @@ impl Default for UI {
 }
 
 impl UI {
+    pub fn focus_next(&mut self) {
+        self.focus = self.focus.next()
+    }
+
+    pub fn focus_prev(&mut self) {
+        self.focus = self.focus.prev()
+    }
+
     pub fn render(&mut self, frame: &mut Frame) {
         // get areas of body and status
         let [body_area, status_area] =
