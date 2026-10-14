@@ -2,14 +2,20 @@ use ratatui::{
     Frame,
     layout::{
         Constraint::{self, Length},
-        Layout,
+        Layout, Rect,
     },
+    style::{Color, Style},
     widgets::Block,
 };
+
+use crate::ui::focus::Focus;
+
+mod focus;
 
 pub struct UI {
     status: String,
     ratio: [u16; 3],
+    focus: Focus,
 }
 
 impl Default for UI {
@@ -18,6 +24,8 @@ impl Default for UI {
             status: "app status".to_string(),
             // ratio of panels
             ratio: [1, 2, 3],
+            // focused panel
+            focus: Focus::List,
         }
     }
 }
@@ -32,12 +40,17 @@ impl UI {
         frame.render_widget(self.status.clone(), status_area);
 
         // get areas of side, list and view panels
-        let [side_area, list_area, view_area] =
+        let body_area_list: [Rect; 3] =
             Layout::horizontal(self.ratio.map(|u| Constraint::Fill(u))).areas(body_area);
 
         // render panels
-        frame.render_widget(Block::bordered(), side_area);
-        frame.render_widget(Block::bordered(), list_area);
-        frame.render_widget(Block::bordered(), view_area);
+        for (i, area) in body_area_list.iter().enumerate() {
+            let style = if i == self.focus.clone() as usize {
+                Style::default().fg(Color::Red)
+            } else {
+                Style::default()
+            };
+            frame.render_widget(Block::bordered().border_style(style), *area);
+        }
     }
 }
