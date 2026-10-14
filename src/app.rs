@@ -30,8 +30,11 @@ impl App {
         };
         if key.kind == KeyEventKind::Press {
             match key.code {
+                // quit app is press to 'q'
                 KeyCode::Char('q') => return Ok(true),
+                // next focus
                 KeyCode::Tab => self.ui.focus_next(),
+                // prev focus
                 KeyCode::BackTab => self.ui.focus_prev(),
                 _ => {}
             }
