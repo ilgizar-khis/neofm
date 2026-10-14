@@ -1,5 +1,5 @@
 use crate::UI;
-use crossterm::event;
+use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 
 pub struct App {
     ui: UI,
@@ -17,10 +17,25 @@ impl App {
             loop {
                 term.draw(|frame| self.ui.render(frame))?;
 
-                if event::read()?.is_key_press() {
+                if self.handle_keys()? {
                     break Ok(());
                 }
             }
         })
+    }
+
+    fn handle_keys(&mut self) -> std::io::Result<bool> {
+        let Event::Key(key) = event::read()? else {
+            return Ok(false);
+        };
+        if key.kind == KeyEventKind::Press {
+            match key.code {
+                KeyCode::Char('q') => return Ok(true),
+                KeyCode::Tab => self.ui.focus_next(),
+                KeyCode::BackTab => self.ui.focus_prev(),
+                _ => {}
+            }
+        }
+        Ok(false)
     }
 }
