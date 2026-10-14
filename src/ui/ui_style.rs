@@ -10,6 +10,18 @@ pub enum HLGroup {
     NormalBorder,
 }
 
+impl HLGroup {
+    pub fn from(from: String) -> Option<Self> {
+        match from.to_lowercase().as_str() {
+            "active_panel" | "activepanel" => Some(Self::ActivePanel),
+            "normal_panel" | "normalpanel" => Some(Self::NormalPanel),
+            "active_border" | "activeborder" => Some(Self::ActiveBorder),
+            "normal_border" | "normalborder" => Some(Self::NormalBorder),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug)]
 pub struct HL {
     pub bg: Color,
@@ -33,7 +45,7 @@ impl HL {
     }
 }
 
-fn gen_color(color: Option<String>) -> Color {
+pub fn gen_color(color: Option<String>) -> Color {
     if let Some(color) = color {
         if let Some(color_strip) = color.strip_prefix("x") {
             if let Ok(hex) = u32::from_str_radix(color_strip, 16) {
@@ -70,5 +82,9 @@ impl UIStyle {
             Some(hl) => hl.clone(),
             None => HL::default(),
         }
+    }
+
+    pub fn add_hl(&mut self, group: HLGroup, hl: HL) {
+        self.colors.insert(group, hl);
     }
 }

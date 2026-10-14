@@ -2,7 +2,7 @@ use crate::UI;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 
 pub struct App {
-    ui: UI,
+    pub ui: UI,
 }
 
 impl Default for App {

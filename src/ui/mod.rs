@@ -8,10 +8,8 @@ use ratatui::{
     widgets::Block,
 };
 
-use crate::ui::{
-    focus::Focus,
-    ui_style::{HLGroup, UIStyle},
-};
+use crate::ui::focus::Focus;
+use crate::ui::ui_style::{HL, HLGroup, UIStyle, gen_color};
 
 mod focus;
 mod ui_style;
@@ -43,6 +41,16 @@ impl UI {
 
     pub fn focus_prev(&mut self) {
         self.focus = self.focus.prev()
+    }
+
+    pub fn add_hl(&mut self, group: String, bg: Option<String>, fg: Option<String>) {
+        if let Some(group) = HLGroup::from(group) {
+            let hl = HL {
+                bg: gen_color(bg),
+                fg: gen_color(fg),
+            };
+            self.style.add_hl(group, hl);
+        }
     }
 
     pub fn render(&mut self, frame: &mut Frame) {
